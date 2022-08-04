@@ -28,12 +28,16 @@ namespace DNIC
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            var connectionString = Configuration["ConnectionStrings:DefaultConnection"];
+
             services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlite(@"DataSource=mydatabase.db;"));
+                options.UseNpgsql(connectionString));
             services.AddDefaultIdentity<User>(options =>
             {
                 options.SignIn.RequireConfirmedAccount = false;
                 options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = false;
+                options.Password.RequireLowercase = false;
             })
                .AddRoles<IdentityRole>()
                .AddEntityFrameworkStores<ApplicationDbContext>();
