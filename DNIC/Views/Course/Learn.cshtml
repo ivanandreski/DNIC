@@ -1,0 +1,50 @@
+﻿@model DNIC.Models.Section
+
+@{
+    int prevPage = (int)ViewData["prevPage"];
+    int nextPage = (int)ViewData["nextPage"];
+    Course course = ViewData["course"] as Course;
+
+    string title = $"{Model.Title} - Page: {Model.Page}";
+
+    ViewData["Title"] = $"{course.Name} Page: {Model.Page}";
+}
+
+<div>
+    <h1>@title</h1>
+    <p>
+        @Model.Text
+    </p>
+    <div class="row">
+        <div class="col-md-6">
+            @if (nextPage == -1)
+            {
+                <div style="width:100%">
+                    <h3>Are you ready to test your knowledge?</h3>
+                    <a href="#" class="btn btn-primary">
+                        Yes take me to the quiz
+                    </a>
+                </div>
+            }
+        </div>
+        <div class="col-md-6">
+            @if (prevPage != -1)
+            {
+                <a href=@Html.Raw($"/Course/Learn/{course.Id}?section={prevPage}")
+               class="btn btn-outline-secondary"
+               id="previous">
+                    Previous
+                </a>
+            }
+            @if (nextPage != -1)
+            {
+                <a href=@Html.Raw($"/Course/Learn/{course.Id}?section={nextPage}")
+               class="btn btn-outline-secondary"
+               id="next">
+                    Next
+                </a>
+            }
+        </div>
+    </div>
+</div>
+

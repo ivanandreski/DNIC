@@ -1,0 +1,55 @@
+﻿@model DNIC.Models.Dto.CourseDto
+
+@{
+    ViewData["Title"] = "Edit";
+    //var currentImage = ViewData["CurrentImage"] as byte[];
+    //var courseId = ViewData["CourseId"];
+}
+
+<h1>Edit</h1>
+<hr />
+<div class="row">
+    <div class="col-md-6">
+        <form action=@Html.Raw($"/Course/Edit/{Model.CourseId}") enctype="multipart/form-data" method="POST">
+           @Html.AntiForgeryToken()
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Description" class="control-label"></label>
+                <input asp-for="Description" class="form-control" />
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Image" class="control-label"></label>
+                <input type="file" asp-for="Image" class="form-control" />
+                <span asp-validation-for="Image" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+            <hr/>
+            <div>
+                <a asp-action="Index">Back to List</a>
+            </div>
+        </form>
+    </div>
+    <div class="col-md-6">
+        <div>
+            <label>Current image:</label>
+            <img src="data:image;base64,@System.Convert.ToBase64String(Model.ImageArray)"
+                 class="card-img-top"
+                 alt="..."
+                 style="width:100%;height:40vh;object-fit:cover;" />
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    }

@@ -1,0 +1,46 @@
+﻿@using DNIC.Models
+@model IEnumerable<DNIC.Models.UserCourseResult>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1 class="text-center">Start your learning proccess!</h1>
+
+<div class="row mt-4">
+    @foreach (var course in Model)
+    {
+        <div class="col-md-3">
+            <div class="card mt-3 mb-3">
+                <img src="data:image;base64,@System.Convert.ToBase64String(course.Course.Image)"
+                 class="card-img-top"
+                 alt="..."
+                 style="width:100%;height:40vh;object-fit:cover;" />
+                <div class="card-body">
+                    <h5 class="card-title" style="max-height:20px;">
+                        @course.Course.Name
+                    </h5>
+                    <p class="card-text">@course.Course.Description</p>
+                    @*        <ProgressBar
+                striped
+                variant="info"
+                now={score[object.id]}
+                label={`${score[object.id]}%`}
+                class="mb-3"
+                />*@
+                    <a href=@Html.Raw($"/Course/Learn/{course.Course.Id}") class="btn btn-outline-secondary">
+                        Learn
+                    </a>
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <a href=@Html.Raw($"/Course/Details/{course.Course.Id}") class="btn btn-outline-secondary">
+                            Details
+                        </a>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+
