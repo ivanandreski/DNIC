@@ -1,44 +1,46 @@
 ﻿@using DNIC.Models
-@model IEnumerable<DNIC.Models.UserCourseResult>
+@model List<DNIC.Models.Quiz>
 
 @{
     ViewData["Title"] = "Index";
+
+    List<double> percentages = ViewData["percentages"] as List<double>;
 }
 
 <h1 class="text-center">Start your learning proccess!</h1>
 
 <div class="row mt-4">
-    @foreach (var course in Model)
+    @for (int i = 0; i < Model.Count(); i++)
     {
         <div class="col-md-3">
             <div class="card mt-3 mb-3">
-                <img src="data:image;base64,@System.Convert.ToBase64String(course.Course.Image)"
+                <img src="data:image;base64,@System.Convert.ToBase64String(Model[i].Course.Image)"
                  class="card-img-top"
                  alt="..."
                  style="width:100%;height:40vh;object-fit:cover;" />
                 <div class="card-body">
                     <h5 class="card-title" style="max-height:20px;">
-                        @course.Course.Name
+                        @Model[i].Course.Name
                     </h5>
-                    <p class="card-text">@course.Course.Description</p>
+                    <p class="card-text">@Model[i].Course.Description</p>
                     <div class="progress">
                         <div class="progress-bar"
                          role="progressbar"
                          aria-label="Example with label"
-                         style=@Html.Raw($"width: {course.Percentage}%;")
-                         aria-valuenow=@course.Percentage
+                         style=@Html.Raw($"width: {percentages[i]}%;")
+                         aria-valuenow=@percentages[i]
                          aria-valuemin="0"
                          aria-valuemax="100">
-                            @course.Percentage%
+                            @percentages[i]%
                         </div>
                     </div>
                     <div class="mt-2">
-                        <a href=@Html.Raw($"/Course/Learn/{course.Course.Id}") class="btn btn-outline-secondary">
-                            Learn
+                        <a href=@Html.Raw($"/Quiz/Start/{Model[i].Id}") class="btn btn-outline-secondary">
+                            Start Quiz
                         </a>
                         @if (User.IsInRole("Admin"))
                         {
-                            <a href=@Html.Raw($"/Course/Details/{course.Course.Id}") class="btn btn-outline-secondary">
+                            <a href=@Html.Raw($"/Quiz/Details/{Model[i].Id}") class="btn btn-outline-secondary">
                                 Details
                             </a>
                         }

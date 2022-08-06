@@ -143,6 +143,15 @@ namespace DNIC.Controllers
                 }
 
                 _context.Courses.Add(course);
+
+                // Quiz for course
+                var quiz = new Quiz();
+                quiz.Id = Guid.NewGuid();
+                quiz.Course = course;
+                quiz.CourseId = course.Id;
+                _context.Quizes.Add(quiz);
+
+                // Results for users
                 foreach (var user in _context.Users)
                 {
                     var userCourseResult = new UserCourseResult();

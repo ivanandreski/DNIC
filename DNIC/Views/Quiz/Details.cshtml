@@ -1,0 +1,47 @@
+﻿@model DNIC.Models.Quiz
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Quiz for course: @Model.Course.Name</h1>
+
+<div>
+    <hr />
+    <h3>Questions</h3>
+    <div class="row">
+        <div class="col-md-12">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Text</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (int i = 0; i < Model.Questions.Count; i++)
+                    {
+                        var question = Model.Questions[i];
+
+                        <tr>
+                            <th>@i</th>
+                            <td>@question.Text</td>
+                            <td>
+                                <a href=@Html.Raw($"/Question/Edit/{question.Id}") class="btn btn-secondary">Edit</a>
+                                <a href=@Html.Raw($"/Question/Delete/{question.Id}") class="btn btn-danger">Delete</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+            <a href=@Html.Raw($"/Question/Create?quizId={Model.Id}") class="btn btn-primary">Add Question</a>
+            <hr />
+        </div>
+    </div>
+    <div>
+        <a asp-action="Index">Back to List</a>
+    </div>
+
+</div>

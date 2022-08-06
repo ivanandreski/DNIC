@@ -7,26 +7,19 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using DNIC.Data;
 using DNIC.Models;
-using DNIC.Models.Dto;
 
 namespace DNIC.Controllers
 {
-    public class SectionController : Controller
+    public class QuestionController : Controller
     {
         private readonly ApplicationDbContext _context;
 
-        public SectionController(ApplicationDbContext context)
+        public QuestionController(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        // GET: Section
-        public async Task<IActionResult> Index()
-        {
-            return View(await _context.Sections.ToListAsync());
-        }
-
-        // GET: Section/Details/5
+        // GET: Question/Details/5
         public async Task<IActionResult> Details(Guid? id)
         {
             if (id == null)
@@ -34,59 +27,47 @@ namespace DNIC.Controllers
                 return NotFound();
             }
 
-            var section = await _context.Sections
+            var question = await _context.Questions
+                .Include(q => q.Quiz)
+                .Include(q => q.Answers)
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (section == null)
+            if (question == null)
             {
                 return NotFound();
             }
 
-            return View(section);
+            return View(question);
         }
 
-        // GET: Section/Create
-        public IActionResult Create(Guid? courseId)
+        // GET: Question/Create
+        public IActionResult Create(Guid? quizId)
         {
-            if (courseId == null)
-                return NotFound();
+            if (quizId == null) return NotFound();
 
-            var dto = new SectionDto();
-            dto.CourseId = courseId.Value;
+            ViewData["quizId"] = quizId;
 
             return View();
         }
 
-        // POST: Section/Create
+        // POST: Question/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(SectionDto sectionDto)
+        public async Task<IActionResult> Create([Bind("Text,QuizId,Id")] Question question)
         {
             if (ModelState.IsValid)
             {
-                var course = await _context.Courses.FirstOrDefaultAsync(x => x.Id.Equals(sectionDto.CourseId));
-                if (course == null)
-                    return View(sectionDto);
-
-                var section = new Section();
-
-                section.Id = Guid.NewGuid();
-                section.Title = sectionDto.Title;
-                section.Text = sectionDto.Text;
-                section.CourseId = sectionDto.CourseId;
-                section.Course = course;
-
-                section.Page = (await _context.Sections.Where(x => x.CourseId.Equals(sectionDto.CourseId)).CountAsync()) + 1;
-
-                _context.Add(section);
+                question.Id = Guid.NewGuid();
+                _context.Add(question);
                 await _context.SaveChangesAsync();
-                return Redirect($"/Course/Details/{sectionDto.CourseId}");
+                return Redirect($"/Quiz/Details/{question.QuizId}");
             }
-            return View(sectionDto);
+            
+            return View(question);
         }
 
-        // GET: Section/Edit/5
+        // GET: Question/Edit/5
         public async Task<IActionResult> Edit(Guid? id)
         {
             if (id == null)
@@ -94,22 +75,27 @@ namespace DNIC.Controllers
                 return NotFound();
             }
 
-            var section = await _context.Sections.FindAsync(id);
-            if (section == null)
+            var question = await _context.Questions.FindAsync(id);
+            if (question == null)
             {
                 return NotFound();
             }
-            return View(section);
+
+            ViewData["answers"] = _context.Answers
+                .Where(x => x.QuestionId == id)
+                .ToList();
+            
+            return View(question);
         }
 
-        // POST: Section/Edit/5
+        // POST: Question/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("Page,Title,Text,CourseId,Id")] Section section)
+        public async Task<IActionResult> Edit(Guid id, [Bind("Text,QuizId,Id")] Question question)
         {
-            if (id != section.Id)
+            if (id != question.Id)
             {
                 return NotFound();
             }
@@ -118,12 +104,12 @@ namespace DNIC.Controllers
             {
                 try
                 {
-                    _context.Update(section);
+                    _context.Update(question);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!SectionExists(section.Id))
+                    if (!QuestionExists(question.Id))
                     {
                         return NotFound();
                     }
@@ -132,12 +118,13 @@ namespace DNIC.Controllers
                         throw;
                     }
                 }
-                return Redirect($"/Course/Details/{section.CourseId}");
+                return Redirect($"/Quiz/Details/{question.QuizId}");
             }
-            return View(section);
+
+            return View(question);
         }
 
-        // GET: Section/Delete/5
+        // GET: Question/Delete/5
         public async Task<IActionResult> Delete(Guid? id)
         {
             if (id == null)
@@ -145,31 +132,31 @@ namespace DNIC.Controllers
                 return NotFound();
             }
 
-            var section = await _context.Sections
+            var question = await _context.Questions
+                .Include(q => q.Quiz)
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (section == null)
+            if (question == null)
             {
                 return NotFound();
             }
 
-            return View(section);
+            return View(question);
         }
 
-        // POST: Section/Delete/5
+        // POST: Question/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
-            var section = await _context.Sections.FindAsync(id);
-            _context.Sections.Remove(section);
+            var question = await _context.Questions.FindAsync(id);
+            _context.Questions.Remove(question);
             await _context.SaveChangesAsync();
-
-            return Redirect($"/Course/Details/{section.CourseId}");
+            return Redirect($"/Quiz/Details/{question.QuizId}");
         }
 
-        private bool SectionExists(Guid id)
+        private bool QuestionExists(Guid id)
         {
-            return _context.Sections.Any(e => e.Id == id);
+            return _context.Questions.Any(e => e.Id == id);
         }
     }
 }
