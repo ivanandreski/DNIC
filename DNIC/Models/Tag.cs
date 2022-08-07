@@ -8,5 +8,11 @@ namespace DNIC.Models
 
         public Guid ProductId { get; set; }
         public Product Product { get; set; }
+
+        public Tag(string name, Guid productId)
+        {
+            Name = name;
+            ProductId = productId;
+        }
     }
 }

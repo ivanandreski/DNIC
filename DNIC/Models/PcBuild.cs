@@ -35,18 +35,6 @@ namespace DNIC.Models
         //    return ram.Tags.Exists(x => x.Name == motherboardRam.Name) ? 1 : -1;
         //}
 
-        //public int MotherboardSSDCompatibility()
-        //{
-        //    var motherboard = Products.FirstOrDefault(x => x.Type == ProductTypes.Motherboard);
-        //    if (motherboard == null) return -1;
-
-        //    var ssd = Products.FirstOrDefault(x => x.Type == ProductTypes.SolidStateDrive);
-        //    if (ssd == null) return -1;
-
-        //    var motherboardNVMe = motherboard.Tags.Where(x => x.Name == "NVME" || x.Name == "SATA").FirstOrDefault();
-        //    return ssd.Tags.Exists(x => x.Name == motherboardNVMe.Name) ? 1 : -1;
-        //}
-
         //public int PowerSupplyGraphicsCardCompatibility()
         //{
         //    // TODO: watts needed

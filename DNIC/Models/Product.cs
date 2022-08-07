@@ -11,11 +11,13 @@ namespace DNIC.Models
 
         public int Price { get; set; }
 
-        public bool IsAvailable { get; set; }
+        public string Url { get; set; }
+
+        public int RealId { get; set; }
 
         public string StoreName { get; set; }
 
-        public byte[] StoreImage { get; set; }
+        public string StoreImageUrl { get; set; }
 
         public ICollection<PcBuildProduct> PcBuildProducts { get; set; }
 

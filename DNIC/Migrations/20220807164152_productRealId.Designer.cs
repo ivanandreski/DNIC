@@ -3,15 +3,17 @@ using System;
 using DNIC.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace DNIC.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220807164152_productRealId")]
+    partial class productRealId
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -110,8 +112,8 @@ namespace DNIC.Migrations
                     b.Property<int>("RealId")
                         .HasColumnType("integer");
 
-                    b.Property<string>("StoreImageUrl")
-                        .HasColumnType("text");
+                    b.Property<byte[]>("StoreImage")
+                        .HasColumnType("bytea");
 
                     b.Property<string>("StoreName")
                         .HasColumnType("text");
