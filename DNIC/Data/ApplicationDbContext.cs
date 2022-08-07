@@ -20,6 +20,10 @@ namespace DNIC.Data
         public virtual DbSet<Answer> Answers { get; set; }
         public virtual DbSet<Question> Questions { get; set; }
         public virtual DbSet<Quiz> Quizes { get; set; }
+        public virtual DbSet<Product> Products { get; set; }
+        public virtual DbSet<Tag> Tags { get; set; }
+        public virtual DbSet<PcBuild> PcBuild { get; set; }
+        public virtual DbSet<PcBuildProduct> PcBuildProducts { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -49,6 +53,29 @@ namespace DNIC.Data
                 .HasOne(x => x.Quiz)
                 .WithOne(x => x.Course)
                 .HasForeignKey<Quiz>(x => x.CourseId);
+
+            builder.Entity<Tag>()
+                .HasOne(x => x.Product)
+                .WithMany(x => x.Tags)
+                .HasForeignKey(x => x.ProductId);
+
+            builder.Entity<User>()
+                .HasOne(x => x.PcBuild)
+                .WithOne(x => x.User)
+                .HasForeignKey<PcBuild>(x => x.UserId);
+
+            builder.Entity<PcBuildProduct>()
+                .HasKey(bc => new { bc.ProductId, bc.PcBuildId });
+
+            builder.Entity<PcBuildProduct>()
+                .HasOne(x => x.PcBuild)
+                .WithMany(x => x.PcBuildProducts)
+                .HasForeignKey(x => x.PcBuildId);
+
+            builder.Entity<PcBuildProduct>()
+                .HasOne(x => x.Product)
+                .WithMany(x => x.PcBuildProducts)
+                .HasForeignKey(x => x.ProductId);
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using System;
 using System.Collections.Generic;
 
 namespace DNIC.Models
@@ -11,5 +12,6 @@ namespace DNIC.Models
         // Relatonship
 
         public virtual List<UserCourseResult> UserCourseResults { get; set; }
+        public PcBuild PcBuild { get; set; }
     }
 }
