@@ -23,13 +23,8 @@
                     <p class="card-text">@course.Course.Description</p>
                     <div class="progress">
                         <div class="progress-bar"
-                         role="progressbar"
-                         aria-label="Example with label"
-                         style=@Html.Raw($"width: {course.Percentage}%;")
-                         aria-valuenow=@course.Percentage
-                         aria-valuemin="0"
-                         aria-valuemax="100">
-                            @course.Percentage%
+                         @Html.Raw($"style=\"width: {(int)course.Percentage}% !important;\"")>
+                            @((int)course.Percentage)%
                         </div>
                     </div>
                     <div class="mt-2">

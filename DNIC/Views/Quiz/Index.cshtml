@@ -25,25 +25,28 @@
                     <p class="card-text">@Model[i].Course.Description</p>
                     <div class="progress">
                         <div class="progress-bar"
-                         role="progressbar"
-                         aria-label="Example with label"
-                         style=@Html.Raw($"width: {percentages[i]}%;")
-                         aria-valuenow=@percentages[i]
-                         aria-valuemin="0"
-                         aria-valuemax="100">
-                            @percentages[i]%
+                         @Html.Raw($"style=\"width: {(int)percentages[i]}% !important;\"")>
+                            @((int)percentages[i])%
                         </div>
                     </div>
-                    <div class="mt-2">
-                        <a href=@Html.Raw($"/Quiz/Start/{Model[i].Id}") class="btn btn-outline-secondary">
-                            Start Quiz
-                        </a>
-                        @if (User.IsInRole("Admin"))
-                        {
-                            <a href=@Html.Raw($"/Quiz/Details/{Model[i].Id}") class="btn btn-outline-secondary">
-                                Details
-                            </a>
-                        }
+                    <div class="mt-2 row">
+                        <div class="col-md-7">
+                            <form action=@Html.Raw($"/Quiz/StartQuiz") method="POST">
+                                <input hidden name="id" value=@Model[i].Id />
+                                <button type="submit" class="w-100 btn btn-outline-secondary">Start Quiz</button>
+                            </form>
+                        </div>
+                        @*                        <a href=@Html.Raw($"/Quiz/Start/{Model[i].Id}") class="btn btn-outline-secondary">
+                    Start Quiz
+                    </a>*@
+                        <div class="col-md-5">
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <a href=@Html.Raw($"/Quiz/Details/{Model[i].Id}") class="btn btn-outline-secondary">
+                                    Details
+                                </a>
+                            }
+                        </div>
                     </div>
                 </div>
             </div>

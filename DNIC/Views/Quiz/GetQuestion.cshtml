@@ -1,0 +1,70 @@
+﻿@model DNIC.Models.Question;
+
+@{
+    int i = 1;
+
+    List<Question> questions = ViewData["questions"] as List<Question>;
+    var userAnswer = ViewData["userAnswer"] as Answer;
+    int questionNum = (int)ViewData["questionNum"];
+
+    string getChecked(Guid answerId)
+    {
+        if (userAnswer == null) return "";
+
+        return userAnswer.Id == answerId ? "checked" : "";
+    }
+
+    string getClass(Guid questionId)
+    {
+        if (questionId == Model.Id)
+            return "bg-warning";
+
+        return "bg-light";
+    }
+}
+
+<div class="row">
+    <div class="col-md-4" style="border-radius: 2px; background-color: lightblue">
+        <div class="row mt-1 ml-1" >
+            @foreach (var question in questions)
+            {
+                <div class="col pt-3">
+                    <a href=@Html.Raw($"/Quiz/GetQuestion/{question.QuizId}?questionNum={i-1}")
+                   class=@Html.Raw(getClass(question.Id) + " w-100")
+                   style="border-radius:2px; padding:15px">
+                        @i
+                    </a>
+                </div>
+
+                i++;
+            }
+
+
+        </div>
+        <div class="row mt-5 ml-1">
+            <form action=@Html.Raw($"/Quiz/FinishQuiz/{questions[0]?.Quiz.Id}") method="POST">
+                <button type="submit" class="btn btn-primary">Finish Quiz</button>
+            </form>
+        </div>
+    </div>
+    <div class="col-md-8 border">
+        <div class="m-2">
+            <p>@Model.Text</p>
+            <form action=@Html.Raw($"/Quiz/AnswerQuestion") method="post">
+                <input hidden name="id" value=@Model.QuizId />
+                <input hidden name="questionNum" value=@questionNum />
+                @*<input hidden name="questionId" value=@Model.Id />*@
+                @foreach (var answer in Model.Answers)
+                {
+                    <div class="form-check">
+                        <input @Html.Raw(getChecked(answer.Id)) class="form-check-input" value=@answer.Id type="radio" name="answerId" id="answerId">
+                        <label class="form-check-label" for="answerId">
+                            @answer.Text
+                        </label>
+                    </div>
+                }
+                <button type="submit" class="btn btn-primary">Save Answer</button>
+            </form>
+        </div>
+    </div>
+</div>
