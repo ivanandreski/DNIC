@@ -11,22 +11,13 @@
 }
 
 <div>
+    <a href="/Course" class="btn btn-outline-secondary">Back to Learn</a>
+    <hr />
     <h1>@title</h1>
     <p>
         @Model.Text
     </p>
-    <div class="row">
-        <div class="col-md-6">
-            @if (nextPage == -1)
-            {
-                <div style="width:100%">
-                    <h3>Are you ready to test your knowledge?</h3>
-                    <a href="#" class="btn btn-primary">
-                        Yes take me to the quiz
-                    </a>
-                </div>
-            }
-        </div>
+    <div class="row pb-3">
         <div class="col-md-6">
             @if (prevPage != -1)
             {
@@ -43,6 +34,17 @@
                id="next">
                     Next
                 </a>
+            }
+        </div>
+        <div class="col-md-6">
+            @if (nextPage == -1)
+            {
+                <div style="width:100%">
+                    <h3>Are you ready to test your knowledge?</h3>
+                    <a href="#" class="btn btn-primary">
+                        Yes take me to the quiz
+                    </a>
+                </div>
             }
         </div>
     </div>

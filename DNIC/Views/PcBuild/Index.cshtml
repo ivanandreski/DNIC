@@ -1,5 +1,150 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model DNIC.Models.PcBuild;
+
 @{
+    ViewData["Title"] = "Pc Build";
+
+    Dictionary<string, Product> productsPcBuildDictionary = ViewData["ProductsPcBuild"] as Dictionary<string, Product>;
+    Dictionary<string, List<Product>> productsDictionary = ViewData["Products"] as Dictionary<string, List<Product>>;
+
+    string getSelected(Guid id, string type)
+    {
+        if (productsPcBuildDictionary[type] == null)
+            return "";
+
+        if (id == productsPcBuildDictionary[type].Id)
+            return "selected";
+
+        return "";
+    }
+
+    string getCompatible()
+    {
+        string htmlTagCompatibility = "<b class";
+
+        if (Model.MotherboardProccesorCompatibility() == -1)
+        {
+            return htmlTagCompatibility + "=\"text-danger\">" + "X</ b > ";
+        }
+
+        if (Model.MotherboardRamCompatibility() == -1)
+        {
+            return htmlTagCompatibility + "=\"text-danger\">" + "X</ b > ";
+        }
+
+        return htmlTagCompatibility + "=\"text-success\">" + "✓</ b > ";
+    }
+
+    string getClass(Product product, string key)
+    {
+        if (key == ProductTypes.Motherboard)
+        {
+            if (Model.MotherboardProccesorCompatibility() == -1 || Model.MotherboardRamCompatibility() == -1)
+            {
+                return "bg-danger";
+            }
+            if (Model.MotherboardProccesorCompatibility() == 1 || Model.MotherboardRamCompatibility() == 1)
+            {
+                return "bg-success";
+            }
+        }
+        else if (key == ProductTypes.Proccesor)
+        {
+            if (Model.MotherboardProccesorCompatibility() == -1)
+            {
+                return "bg-danger";
+            }
+            if (Model.MotherboardProccesorCompatibility() == 1)
+            {
+                return "bg-success";
+            }
+        }
+        else if (key == ProductTypes.RAM)
+        {
+            if (Model.MotherboardRamCompatibility() == -1)
+            {
+                return "bg-danger";
+            }
+            if (Model.MotherboardRamCompatibility() == 1)
+            {
+                return "bg-success";
+            }
+        }
+
+        return "";
+    }
 }
+
+<div>
+    <h1 >Build a PC!</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">Type</th>
+                <th scope="col">Name</th>
+                <th scope="col">Price</th>
+                <th scope="col">Shop</th>
+                <th scope="col">Select</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var product in productsPcBuildDictionary)
+            {
+                <tr class="@Html.Raw(getClass(product.Value, product.Key))">
+                    <th scope="row">@product.Key:</th>
+                    <td>@(product.Value?.Name ?? "")</td>
+                    <td>@(product.Value?.Price ?? 0) MKD</td>
+                    <td>
+                        @if (product.Value != null)
+                        {
+                            <img src=@product.Value.StoreImageUrl
+                         alt=""
+                         style="height:40px" />
+                        }
+                    </td>
+                    <td>
+                        <form class="form row" action="/PcBuild/SetProduct" method="post">
+                            <div class="col-md-9">
+                                <select class="form-control w-100" name="productId" style="width: 100%">
+                                    <option value=@(null)>---</option>
+                                    @foreach (var productAll in productsDictionary[product.Key])
+                                    {
+                                        <!option value=@productAll.Id @Html.Raw(getSelected(productAll.Id, productAll.Type))>@productAll.Name</!option>
+                                    }
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <button type="submit" class="w-100 btn btn-primary">Save</button>
+                            </div>
+                        </form>
+                    </td>
+                </tr>
+            }
+
+            <tr>
+                <th>
+                    Total Price:
+                </th>
+                <td></td>
+                <td>
+                    @ViewData["price"] MKD
+                </td>
+                <td></td>
+                <th>
+                    Compatible:
+                    @*<b class={!comp ? "text-danger" : "text-success" }>
+                    {!comp ? "X" : "✓"}
+                    </b>*@
+
+                    @*                    <b class=@Html.Raw(getCompatible())>
+                    ✓
+                    </b>*@
+
+                    @Html.Raw(getCompatible())
+                </th>
+                <td></td>
+            </tr>
+        </tbody>
+    </table>
+</div>

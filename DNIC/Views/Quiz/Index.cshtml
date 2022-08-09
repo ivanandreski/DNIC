@@ -5,9 +5,14 @@
     ViewData["Title"] = "Index";
 
     List<double> percentages = ViewData["percentages"] as List<double>;
+
+    string getClass(double percentage)
+    {
+        return percentage > 0 ? "\"btn btn-success w-100\"" : "\"btn btn-danger w-100\"";
+    }
 }
 
-<h1 class="text-center">Start your learning proccess!</h1>
+<h1 class="text-center">Test your knoledge!</h1>
 
 <div class="row mt-4">
     @for (int i = 0; i < Model.Count(); i++)
@@ -33,12 +38,9 @@
                         <div class="col-md-7">
                             <form action=@Html.Raw($"/Quiz/StartQuiz") method="POST">
                                 <input hidden name="id" value=@Model[i].Id />
-                                <button type="submit" class="w-100 btn btn-outline-secondary">Start Quiz</button>
+                                <button type="submit" class=@Html.Raw(getClass(percentages[i]))>Start Quiz</button>
                             </form>
                         </div>
-                        @*                        <a href=@Html.Raw($"/Quiz/Start/{Model[i].Id}") class="btn btn-outline-secondary">
-                    Start Quiz
-                    </a>*@
                         <div class="col-md-5">
                             @if (User.IsInRole("Admin"))
                             {

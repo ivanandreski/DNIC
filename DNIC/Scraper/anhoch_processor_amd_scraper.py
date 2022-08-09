@@ -8,7 +8,7 @@ from product import Product
 # example url https://anhoch.com/category/376/matichni-plochi' + '%23' + 'stock/2/page/1/
 
 hashtag_character = '%23'
-url = 'https://anhoch.com/category/376/matichni-plochi' + '%23' + 'stock/1/page/'
+url = 'https://anhoch.com/category/3005/amd-procesori' + '%23' + 'stock/1/page/'
 
 apiUrl = "https://localhost:44376/api/ProductApi"
 
@@ -30,7 +30,7 @@ while True:
         productNameTag = product.select_one('.product-name a:first-child')
         name = productNameTag.text
         productUrl = productNameTag['href']
-        productType = 'Motherboard'
+        productType = 'Processor'
 
         priceString = product.select_one('.nm').text
         numeric_filter = filter(str.isdigit, priceString)

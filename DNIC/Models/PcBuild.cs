@@ -11,43 +11,37 @@ namespace DNIC.Models
 
         public ICollection<PcBuildProduct> PcBuildProducts { get; set; }
 
-        //public int MotherboardProccesorCompatibility()
-        //{
-        //    var motherboard = Products.FirstOrDefault(x => x.Type == ProductTypes.Motherboard);
-        //    if (motherboard == null) return -1;
+        public int MotherboardProccesorCompatibility()
+        {
+            var motherboard = PcBuildProducts.Select(x => x.Product).FirstOrDefault(x => x.Type == ProductTypes.Motherboard);
+            if (motherboard == null) return 0;
 
-        //    var proccesor = Products.FirstOrDefault(x => x.Type == ProductTypes.Proccesor);
-        //    if (proccesor == null) return -1;
+            var proccesor = PcBuildProducts.Select(x => x.Product).FirstOrDefault(x => x.Type == ProductTypes.Proccesor);
+            if (proccesor == null) return 0;
 
-        //    var socketVendor = motherboard.Tags.Where(x => x.Name == "INTEL" || x.Name == "AMD").FirstOrDefault();
-        //    return proccesor.Tags.Exists(x => x.Name == socketVendor.Name) ? 1 : -1;
-        //}
+            var socketVendor = motherboard.Tags.Where(x => x.Name == "INTEL" || x.Name == "AMD").FirstOrDefault();
+            if (!proccesor.Tags.Exists(x => x.Name == socketVendor.Name))
+                return -1;
 
-        //public int MotherboardRamCompatibility()
-        //{
-        //    var motherboard = Products.FirstOrDefault(x => x.Type == ProductTypes.Motherboard);
-        //    if (motherboard == null) return -1;
+            var socket = motherboard.Tags.Where(x => x.Name.StartsWith("LGA")).FirstOrDefault();
 
-        //    var ram = Products.FirstOrDefault(x => x.Type == ProductTypes.RAM);
-        //    if (ram == null) return -1;
+            if (socket == null && proccesor.Tags.Exists(x => x.Name == "AMD"))
+                return 1;
 
-        //    var motherboardRam = motherboard.Tags.Where(x => x.Name == "DDR3" || x.Name == "DDR4" || x.Name == "DDR5").FirstOrDefault();
-        //    return ram.Tags.Exists(x => x.Name == motherboardRam.Name) ? 1 : -1;
-        //}
+            return proccesor.Tags.Exists(x => x.Name == socket.Name) ? 1 : -1;
+        }
 
-        //public int PowerSupplyGraphicsCardCompatibility()
-        //{
-        //    // TODO: watts needed
+        public int MotherboardRamCompatibility()
+        {
+            var motherboard = PcBuildProducts.Select(x => x.Product).FirstOrDefault(x => x.Type == ProductTypes.Motherboard);
+            if (motherboard == null) return 0;
 
-        //    return 0;
-        //}
+            var ram = PcBuildProducts.Select(x => x.Product).FirstOrDefault(x => x.Type == ProductTypes.RAM);
+            if (ram == null) return 0;
 
-        //public int CaseGraphicsCardCompatibility()
-        //{
-        //    // TODO: in milimeters
-
-        //    return 0;
-        //}
+            var motherboardRam = motherboard.Tags.Where(x => x.Name == "DDR3" || x.Name == "DDR4" || x.Name == "DDR5").FirstOrDefault();
+            return ram.Tags.Exists(x => x.Name == motherboardRam.Name) ? 1 : -1;
+        }
 
     }
 }

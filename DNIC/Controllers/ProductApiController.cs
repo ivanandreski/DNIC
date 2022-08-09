@@ -65,8 +65,12 @@ namespace DNIC.Controllers
         {
             switch (product.Type)
             {
-                case "Motherboard":
+                case ProductTypes.Motherboard:
                     return getMotherboardTags(product);
+                case ProductTypes.Proccesor:
+                    return getCpuTags(product);
+                case ProductTypes.RAM:
+                    return getRamTags(product);
                 default:
                     return new List<Tag>();
             }
@@ -79,18 +83,69 @@ namespace DNIC.Controllers
 
             List<Tag> tags = new List<Tag>();
             if (name.Contains("LGA"))
+            {
+                var split = name.Split(" ");
+                for (int i = 0; i < split.Count(); i++)
+                {
+                    if (split[i].StartsWith("LGA"))
+                    {
+                        tags.Add(new Tag(split[i], productId));
+                        break;
+                    }
+                }
+
                 tags.Add(new Tag("INTEL", productId));
+            }
             else
                 tags.Add(new Tag("AMD", productId));
 
-            foreach (var split in name.Split("\\s+"))
+            if (name.Contains("DDR4"))
+                tags.Add(new Tag("DDR4", productId));
+            else if (name.Contains("DDR3"))
+                tags.Add(new Tag("DDR3", productId));
+            else if (name.Contains("DDR5"))
+                tags.Add(new Tag("DDR5", productId));
+
+            return tags;
+        }
+
+        private List<Tag> getCpuTags(Product product)
+        {
+            string name = product.Name;
+            Guid productId = product.Id;
+
+            List<Tag> tags = new List<Tag>();
+            if (name.Contains("Intel"))
             {
-                if (split.Contains("DDR"))
+                tags.Add(new Tag("INTEL", productId));
+                var split = name.Split(" ");
+                for (int i = 0; i < split.Count(); i++)
                 {
-                    tags.Add(new Tag(split, productId));
-                    break;
+                    if (split[i].StartsWith("LGA"))
+                    {
+                        tags.Add(new Tag(split[i] + split[i + 1], productId));
+                        break;
+                    }
                 }
             }
+            else
+                tags.Add(new Tag("AMD", productId));
+
+            return tags;
+        }
+
+        private List<Tag> getRamTags(Product product)
+        {
+            string name = product.Name;
+            Guid productId = product.Id;
+
+            List<Tag> tags = new List<Tag>();
+            if (name.Contains("DDR4"))
+                tags.Add(new Tag("DDR4", productId));
+            else if (name.Contains("DDR3"))
+                tags.Add(new Tag("DDR3", productId));
+            else if (name.Contains("DDR5"))
+                tags.Add(new Tag("DDR5", productId));
 
             return tags;
         }
