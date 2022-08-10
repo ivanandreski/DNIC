@@ -39,6 +39,23 @@ namespace DNIC.Controllers
                 .Where(x => x.Username.Equals(user.Id))
                 .ToListAsync();
 
+            if (userCourseResults.Count < _context.Courses.Count())
+            {
+                foreach(var course in _context.Courses)
+                {
+                    var userCourseResult = new UserCourseResult();
+                    userCourseResult.Percentage = 0;
+                    userCourseResult.CourseId = course.Id;
+                    userCourseResult.Course = course;
+                    userCourseResult.Username = user.UserName;
+                    userCourseResult.User = user;
+
+                    _context.UserCourseResults.Add(userCourseResult);
+                }
+
+                await _context.SaveChangesAsync();
+            }
+
             return View(userCourseResults);
         }
 
@@ -67,17 +84,17 @@ namespace DNIC.Controllers
 
                 for (int i = 0; i < course.Sections.Count; i++)
                 {
-                    if(course.Sections[i].Page == section)
+                    if (course.Sections[i].Page == section)
                     {
                         prevPage = i == 0 ? -1 : course.Sections[i - 1].Page;
-                        nextPage = i+1 == course.Sections.Count ? -1 : course.Sections[i + 1].Page;
+                        nextPage = i + 1 == course.Sections.Count ? -1 : course.Sections[i + 1].Page;
                         currentSec = course.Sections[i];
 
                         break;
                     }
                 }
 
-                if(currentSec == null)
+                if (currentSec == null)
                 {
                     return NotFound();
                 }
@@ -85,6 +102,8 @@ namespace DNIC.Controllers
                 ViewData["nextPage"] = nextPage;
                 ViewData["prevPage"] = prevPage;
                 ViewData["course"] = course;
+                double progress = (section / (double)course.Sections.Count) * 100.0;
+                ViewData["progress"] = progress;
 
                 return View(currentSec);
             }

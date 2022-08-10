@@ -14,5 +14,8 @@ namespace DNIC.Models
 
         [NotMapped]
         public bool Passed { get { return Percentage < 50 ? false : true; } }
+
+        [NotMapped]
+        public UserQuiz LastResult { get; set; }
     }
 }

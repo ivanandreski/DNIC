@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using DNIC.Data;
 using DNIC.Models;
 using Microsoft.AspNetCore.Authorization;
+using DNIC.Models.Dto;
 
 namespace DNIC.Controllers
 {
@@ -114,6 +115,12 @@ namespace DNIC.Controllers
             var userQuiz = quizesList.FirstOrDefault(x => x.Quiz.Id == id);
             if (userQuiz == null) return NotFound();
 
+            userQuiz.Quiz = _context.Quizes
+                .Include(x => x.Course)
+                .Include(x => x.Questions)
+                    .ThenInclude(x => x.Answers)
+                .FirstOrDefault(x => x.Id == userQuiz.Quiz.Id);
+
             if (questionNum < 0 || questionNum > userQuiz.Quiz.Questions.Count - 1)
                 return BadRequest();
 
@@ -185,6 +192,9 @@ namespace DNIC.Controllers
             {
                 if (percentage > userCourseResult.Percentage)
                     userCourseResult.Percentage = percentage;
+
+                userCourseResult.LastResult = userQuiz;
+
                 _context.Update(userCourseResult);
             }
             else
@@ -194,6 +204,8 @@ namespace DNIC.Controllers
                 userCourseResult.Username = user.UserName;
                 userCourseResult.Percentage = percentage;
                 userCourseResult.CourseId = userQuiz.Quiz.CourseId;
+
+                userCourseResult.LastResult = userQuiz;
             }
 
             await _context.SaveChangesAsync();
@@ -202,7 +214,7 @@ namespace DNIC.Controllers
                 .Where(x => x.Quiz.Id != id)
                 .ToList();
 
-            return Redirect("/Course");
+            return Redirect("/Quiz");
         }
     }
 }
