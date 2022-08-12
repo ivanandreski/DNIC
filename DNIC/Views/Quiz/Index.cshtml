@@ -17,7 +17,7 @@
 <div class="row mt-4">
     @for (int i = 0; i < Model.Count(); i++)
     {
-        <div class="col-md-3">
+        <div class="col-md-6">
             <div class="card mt-3 mb-3">
                 <img src="data:image;base64,@System.Convert.ToBase64String(Model[i].Course.Image)"
                  class="card-img-top"
@@ -44,7 +44,7 @@
                         <div class="col-md-5">
                             @if (User.IsInRole("Admin"))
                             {
-                                <a href=@Html.Raw($"/Quiz/Details/{Model[i].Id}") class="btn btn-outline-secondary">
+                                <a href=@Html.Raw($"/Quiz/Details/{Model[i].Id}") class="w-100 btn btn-outline-secondary">
                                     Details
                                 </a>
                             }

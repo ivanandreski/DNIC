@@ -10,7 +10,7 @@
 <div class="row mt-4">
     @foreach (var course in Model)
     {
-        <div class="col-md-3">
+        <div class="col-md-6">
             <div class="card mt-3 mb-3">
                 <img src="data:image;base64,@System.Convert.ToBase64String(course.Course.Image)"
                  class="card-img-top"
@@ -27,16 +27,20 @@
                             @((int)course.Percentage)%
                         </div>
                     </div>
-                    <div class="mt-2">
-                        <a href=@Html.Raw($"/Course/Learn/{course.Course.Id}?section=1") class="btn btn-outline-secondary">
-                            Learn
-                        </a>
-                        @if (User.IsInRole("Admin"))
-                        {
-                            <a href=@Html.Raw($"/Course/Details/{course.Course.Id}") class="btn btn-outline-secondary">
-                                Details
+                    <div class="mt-2 row">
+                        <div class="col-md-7">
+                            <a href=@Html.Raw($"/Course/Learn/{course.Course.Id}?section=1") class="w-100 btn btn-secondary">
+                                Learn
                             </a>
-                        }
+                        </div>
+                        <div class="col-md-5">
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <a href=@Html.Raw($"/Course/Details/{course.Course.Id}") class="w-100 btn btn-secondary">
+                                    Details
+                                </a>
+                            }
+                        </div>
                     </div>
                 </div>
             </div>

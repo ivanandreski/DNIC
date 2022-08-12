@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace DNIC.Models.Dto
 {
@@ -6,6 +7,12 @@ namespace DNIC.Models.Dto
     {
         public List<QuizReportAnswerDto> Answers { get; set; }
 
-        public double Score { get; set; }
+        public double Score
+        {
+            get
+            {
+                return ((double)Answers.Where(x => x.Correct).Count() / (double)Answers.Count()) * 100.0;
+            }
+        }
     }
 }

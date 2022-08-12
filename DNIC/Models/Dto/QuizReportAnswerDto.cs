@@ -6,6 +6,15 @@
         public Answer YourAnswer { get; set; }
         public Answer CorrectAnswer { get; set; }
 
-        public bool Correct { get { return YourAnswer.Id == CorrectAnswer.Id; } }
+        public bool Correct
+        {
+            get
+            {
+                if (YourAnswer == null)
+                    return false;
+
+                return YourAnswer.Id == CorrectAnswer.Id;
+            }
+        }
     }
 }

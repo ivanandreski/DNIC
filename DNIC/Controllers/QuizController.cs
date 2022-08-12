@@ -17,6 +17,7 @@ namespace DNIC.Controllers
     {
         private readonly ApplicationDbContext _context;
         private static Dictionary<string, List<UserQuiz>> _userQuizes = new Dictionary<string, List<UserQuiz>>();
+        private static Dictionary<string, QuizReportDto> _userQuizReports = new Dictionary<string, QuizReportDto>();
 
         public QuizController(ApplicationDbContext context)
         {
@@ -193,8 +194,6 @@ namespace DNIC.Controllers
                 if (percentage > userCourseResult.Percentage)
                     userCourseResult.Percentage = percentage;
 
-                userCourseResult.LastResult = userQuiz;
-
                 _context.Update(userCourseResult);
             }
             else
@@ -210,11 +209,47 @@ namespace DNIC.Controllers
 
             await _context.SaveChangesAsync();
 
+            _userQuizReports[user.UserName] = null;
+            var userQuizReport = new QuizReportDto();
+            userQuizReport.Answers = new List<QuizReportAnswerDto>();
+            foreach (var question in userQuiz.Quiz.Questions)
+            {
+                var quizAnswersReport = new QuizReportAnswerDto();
+                quizAnswersReport.Text = question.Text;
+                Answer temp;
+                userQuiz.QuestionAnswer.TryGetValue(question.Id, out temp);
+                quizAnswersReport.YourAnswer = temp;
+                quizAnswersReport.CorrectAnswer = userQuiz.Quiz.Questions
+                    .FirstOrDefault(x => x.Id == question.Id)
+                        .Answers
+                        .FirstOrDefault(x => x.IsRight);
+
+                userQuizReport.Answers.Add(quizAnswersReport);
+            }
+            _userQuizReports[user.UserName] = userQuizReport;
+
             _userQuizes[user.UserName] = _userQuizes[user.UserName]
                 .Where(x => x.Quiz.Id != id)
                 .ToList();
 
-            return Redirect("/Quiz");
+            return Redirect("/Quiz/FinishQuiz");
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> FinishQuiz()
+        {
+            return View();
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> QuizReport()
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(x => x.UserName == User.Identity.Name);
+            var userQuizReport = _userQuizReports[user.UserName];
+            if (user == null || userQuizReport == null)
+                return BadRequest();
+
+            return View(userQuizReport);
         }
     }
 }

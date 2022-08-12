@@ -1,8 +1,54 @@
-﻿@model DNIC.Models.Dto.QuizReportDto
+﻿@using DNIC.Models.Dto
+@model DNIC.Models.Dto.QuizReportDto
 
 @{
     ViewData["Title"] = "Quiz Report";
+    int i = 1;
+
+    string getClass(QuizReportAnswerDto dto)
+    {
+        return dto.Correct ? "class=\"row bg-success\"" : "class=\"row bg-danger\"";
+    }
+
+    string getScoreClasss()
+    {
+        return Model.Score > 50 ? "class=\"bg-success\"" : "class=\"bg-danger\"";
+    }
 }
 
-<h1>Report</h1>
+<h1>Quiz report:</h1>
+
+<div class="border p-5">
+    @foreach (var answerReport in Model.Answers)
+    {
+        <div @Html.Raw(getClass(answerReport))>
+            <div class="col-md-12"><h3>@i. @answerReport.Text</h3></div>
+            <div class="col-md-12">
+                <p>
+                    <b>Your answer: </b>@if (answerReport.YourAnswer != null)
+                    {
+                        <span>@answerReport.YourAnswer.Text;</span>
+                    }
+                    else
+                    {
+                        <span>No answer was provided!</span>
+                    }
+                </p>
+            </div>
+            <div class="col-md-12"><p><b>Correct answer: </b>@answerReport.CorrectAnswer.Text</p></div>
+        </div>
+        <hr />
+
+        i++;
+    }
+
+    <div class="row">
+        <h3 @Html.Raw(getScoreClasss())>Your score: @Model.Score%</h3>
+    </div>
+    <hr />
+
+    <div class="row">
+        <a href="/Quiz" class="btn btn-secondary">Close Report</a>
+    </div>
+</div>
 

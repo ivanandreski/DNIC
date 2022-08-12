@@ -1,6 +1,4 @@
-﻿@model Guid
-
-@{
+﻿@{
     ViewData["Title"] = "Finish Quiz";
 }
 
@@ -9,7 +7,7 @@
         <h3>Quiz Report</h3>
         <hr />
         <p>Would you like to view a report?</p>
-        <a href=@Html.Raw("/Quiz/QuizReport/" + Model) class="btn btn-secondary">View Report</a>
+        <a href=@Html.Raw("/Quiz/QuizReport/") class="btn btn-secondary">View Report</a>
         <a href="/Quiz" class="btn btn-primary">Back to quizes</a>
     </div>
 </div>

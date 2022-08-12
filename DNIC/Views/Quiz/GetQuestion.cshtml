@@ -57,8 +57,8 @@
                 @foreach (var answer in Model.Answers)
                 {
                     <div class="form-check">
-                        <input @Html.Raw(getChecked(answer.Id)) class="form-check-input" value=@answer.Id type="radio" name="answerId" id="answerId">
-                        <label class="form-check-label" for="answerId">
+                        <input @Html.Raw(getChecked(answer.Id)) class="form-check-input" value=@answer.Id type="radio" name="answerId" id=@answer.QuestionId>
+                        <label class="form-check-label" for="answerId" id=@answer.QuestionId>
                             @answer.Text
                         </label>
                     </div>
