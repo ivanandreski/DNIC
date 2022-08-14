@@ -69,6 +69,7 @@ namespace DNIC.Controllers
 
             var course = await _context.Courses
                 .Include(x => x.Sections)
+                .Include(x => x.Quiz)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (course == null)
             {
